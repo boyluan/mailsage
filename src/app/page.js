@@ -308,7 +308,7 @@ const EmailCard = ({
         <h3 className="text-xl font-semibold text-gray-100">{email.subject}</h3>
         <div className="relative">
           <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 mb-2">
-            {isExpanded ? "PREVIEW" : "RAW"}
+            {isExpanded ? "EXPANDED" : "PREVIEW"}
           </span>
           {displaySnippet && (
             <p className="leading-relaxed text-sm text-gray-400">{displaySnippet}</p>
