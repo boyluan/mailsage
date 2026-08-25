@@ -767,8 +767,34 @@ const App = () => {
 
   if (!session)
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
-        <h1 className={`text-6xl mb-8 ${jua.className}`}>MailSage</h1>
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white px-6 py-12">
+        <h1 className={`text-6xl mb-4 ${jua.className}`}>MailSage</h1>
+        <p className="text-gray-400 text-center text-lg mb-8 max-w-md leading-relaxed">
+          Turn a crowded inbox into a clear plan.
+        </p>
+        <div className="w-full max-w-md rounded-3xl border border-gray-800 bg-[#111] p-5 mb-8 shadow-2xl">
+          <div className="flex items-center gap-3 border-b border-gray-800 pb-4 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
+              <Mail size={19} className="text-black" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-white">Your inbox, understood</p>
+              <p className="text-xs text-gray-500">MailSage AI summary</p>
+            </div>
+            <Sparkles size={17} className="ml-auto text-gray-400" />
+          </div>
+          <p className="text-left text-sm text-gray-300 leading-relaxed mb-4">
+            The team approved the launch plan. Review the final timeline and share feedback by Friday.
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-gray-200">
+              <CheckCircle size={13} /> 2 action items
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-gray-200">
+              <Share2 size={13} /> 3 key links
+            </span>
+          </div>
+        </div>
         <button
           onClick={() => signIn('google')}
           className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-all"
