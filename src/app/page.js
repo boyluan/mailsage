@@ -778,9 +778,6 @@ const App = () => {
             <p className="mt-6 max-w-md text-pretty text-lg leading-relaxed text-gray-400 md:text-xl">
               Turn a crowded inbox into a clear plan.
             </p>
-            <p className="mt-4 max-w-sm text-pretty text-sm leading-relaxed text-gray-600">
-              Read less. Know what matters. Move work forward.
-            </p>
             <button
               onClick={() => signIn('google')}
               className="mt-9 flex items-center gap-3 rounded-full bg-white px-6 py-3 font-bold text-black transition-all hover:bg-gray-200"
