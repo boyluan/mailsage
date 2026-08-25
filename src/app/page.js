@@ -767,46 +767,78 @@ const App = () => {
 
   if (!session)
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white px-6 py-12">
-        <h1 className={`text-6xl mb-4 ${jua.className}`}>MailSage</h1>
-        <p className="text-gray-400 text-center text-lg mb-8 max-w-md leading-relaxed">
-          Turn a crowded inbox into a clear plan.
-        </p>
-        <div className="w-full max-w-md rounded-3xl border border-gray-800 bg-[#111] p-5 mb-8 shadow-2xl">
-          <div className="flex items-center gap-3 border-b border-gray-800 pb-4 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
-              <Mail size={19} className="text-black" />
+      <main className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-12 md:px-10 lg:px-16">
+        <div className="w-full max-w-6xl grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <section className="flex flex-col items-center text-center lg:items-start lg:text-left">
+            <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-gray-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-white" />
+              Email clarity, on demand
+            </p>
+            <h1 className={`text-6xl leading-none md:text-7xl ${jua.className}`}>MailSage</h1>
+            <p className="mt-6 max-w-md text-pretty text-lg leading-relaxed text-gray-400 md:text-xl">
+              Turn a crowded inbox into a clear plan.
+            </p>
+            <p className="mt-4 max-w-sm text-pretty text-sm leading-relaxed text-gray-600">
+              Read less. Know what matters. Move work forward.
+            </p>
+            <button
+              onClick={() => signIn('google')}
+              className="mt-9 flex items-center gap-3 rounded-full bg-white px-6 py-3 font-bold text-black transition-all hover:bg-gray-200"
+            >
+              <img
+                src="https://authjs.dev/img/providers/google.svg"
+                alt="Google"
+                className="h-5 w-5"
+              />
+              Sign in with Google
+            </button>
+          </section>
+
+          <section aria-label="MailSage product preview" className="relative">
+            <div className="absolute -inset-3 rounded-[2rem] border border-gray-900" />
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-gray-800 bg-[#111] p-5 shadow-2xl md:p-7">
+              <div className="mb-7 flex items-center justify-between border-b border-gray-800 pb-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                    <Mail size={19} className="text-black" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">Inbox / Project launch</p>
+                    <p className="text-xs text-gray-500">From Alex Morgan · 2 min ago</p>
+                  </div>
+                </div>
+                <span className="flex items-center gap-1.5 rounded-full border border-gray-700 px-3 py-1.5 text-xs text-gray-300">
+                  <Sparkles size={13} /> AI summary
+                </span>
+              </div>
+              <div className="grid gap-6 md:grid-cols-[1fr_0.85fr]">
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Summary</p>
+                  <p className="text-xl leading-relaxed text-gray-200 md:text-2xl">
+                    The team approved the launch plan. Review the final timeline and share feedback by Friday.
+                  </p>
+                </div>
+                <div className="grid gap-3">
+                  <div className="rounded-2xl bg-white/10 p-4">
+                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
+                      <CheckCircle size={15} /> Action items
+                    </div>
+                    <p className="text-sm leading-relaxed text-gray-200">Review timeline</p>
+                    <p className="text-sm leading-relaxed text-gray-200">Share feedback by Friday</p>
+                  </div>
+                  <div className="rounded-2xl bg-white/10 p-4">
+                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
+                      <Share2 size={15} /> Key links
+                    </div>
+                    <p className="text-sm text-gray-200">Launch timeline · Project brief</p>
+                    <p className="mt-1 text-xs text-gray-500">3 links found in this thread</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-white">Your inbox, understood</p>
-              <p className="text-xs text-gray-500">MailSage AI summary</p>
-            </div>
-            <Sparkles size={17} className="ml-auto text-gray-400" />
-          </div>
-          <p className="text-left text-sm text-gray-300 leading-relaxed mb-4">
-            The team approved the launch plan. Review the final timeline and share feedback by Friday.
-          </p>
-          <div className="flex flex-wrap gap-2 text-xs">
-            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-gray-200">
-              <CheckCircle size={13} /> 2 action items
-            </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-gray-200">
-              <Share2 size={13} /> 3 key links
-            </span>
-          </div>
+          </section>
         </div>
-        <button
-          onClick={() => signIn('google')}
-          className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-all"
-        >
-          <img
-            src="https://authjs.dev/img/providers/google.svg"
-            alt="Google"
-            className="w-5 h-5"
-          />
-          Sign in with Google
-        </button>
-      </div>
+      </main>
     );
 
   const handleArchive = (id) => setEmails(prev => prev.filter(e => e.id !== id));
