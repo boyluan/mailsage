@@ -2,8 +2,6 @@
 
 MailSage is an intelligent email interface built with Next.js that connects directly to your Gmail. It uses OpenAI to summarize threads, extract action items, and allow you to "chat" with your inbox contextually.
 
-![Project Preview](https://via.placeholder.com/800x400?text=MailSage+Interface)
-
 ## 🚀 Features
 
 * **Real Gmail Integration**: Securely fetches live emails via the Gmail API (ReadOnly scope).
