@@ -3,7 +3,7 @@
 MailSage is a private, invite-only Gmail companion built with Next.js. It uses OpenAI to summarise individual email messages, identify potential action items and key links, and provide an AI-powered assistant for exploring inbox metadata.
 
 
-### Live Application (Invite-only): [https://mailsage-desktop.vercel.app/](https://mailsage-desktop.vercel.app/)
+### Live Application (Invite-only): [https://mailsage-desktop.vercel.app](https://mailsage-desktop.vercel.app)
 
 
 > **Project Status:** MailSage is an independently developed, limited-access internal tool currently used by its creator and a small group of invited users. It is not a publicly-released email service. Access is managed through Google OAuth test-user approval, and Gmail permissions are read-only.
