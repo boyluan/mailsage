@@ -1,20 +1,29 @@
 # MailSage 📨 ✨
 
-MailSage is an intelligent email interface built with Next.js that connects directly to your Gmail. It uses OpenAI to summarize threads, extract action items, and allow you to "chat" with your inbox contextually.
+MailSage is a private, invite-only Gmail companion built with Next.js. It uses OpenAI to summarise individual email messages, identify potential action items and key links, and provide an AI-powered assistant for exploring inbox metadata.
+
+
+### Live Application (Invite-only): [https://mailsage-desktop.vercel.app/](https://mailsage-desktop.vercel.app/)
+
+
+> **Project Status:** MailSage is an independently developed, limited-access internal tool currently used by its creator and a small group of invited users. It is not a publicly-released email service. Access is managed through Google OAuth test-user approval, and Gmail permissions are read-only.
+
 
 ## 🚀 Features
 
 * **Real Gmail Integration**: Securely fetches live emails via the Gmail API (ReadOnly scope).
-* **AI Summaries**: Instantly summarizes long email threads and highlights **Action Items** in green.
-* **Contextual Chat**: Ask questions like *"What did Sarah say about the design?"* and get answers based on your current inbox view.
+* **AI Message Summaries**: Generates summaries of individual email messages, highlighting potential action items and key links. Summaries are based on the extracted content of the selected message, rather than automatically retrieving and combining every message in a conversation thread.
+* **AI Inbox Assistant**: Ask questions about senders, subjects and dates within the currently loaded inbox. The assistant can help identify and pin matching emails, but does not analyse the contents of email bodies.
 * **Smart Search**: Instant, keyboard-driven search filtering.
-* **Pinning System**: Pin important emails for quick access (persists across sessions).
+* **Pinning System**: Pin important emails for quick access during the current application session.
 * **Keyboard Shortcuts**: Navigate your inbox without touching the mouse.
-* **Dark Mode**: Built-in dark/light mode toggle with smooth transitions.
+* **Appearance Toggle**: Switches the appearance of selected interface controls, while the main application retains its dark-themed design.
+* **Temporary View Actions**: Hide emails from the current MailSage view using the Delete or Archive icons. These actions do not modify, delete or archive messages in Gmail. Hidden emails may reappear when the application is reloaded.
+* **Inbox Retrieval**: Loads up to 50 messages from the user's Gmail Inbox. Search and date-range filters operate on this retrieved set rather than the user's entire mailbox.
 
 ## 🛠️ Tech Stack
 
-* **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+* **Framework**: [Next.js 16.0.7](https://nextjs.org/) (App Router)
 * **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 * **Auth**: [NextAuth.js](https://next-auth.js.org/) (Google Provider)
 * **AI**: [OpenAI API](https://openai.com/) (`gpt-4o`)
@@ -40,53 +49,99 @@ OPENAI_API_KEY=sk-your_openai_key
 # Generate a random string: `openssl rand -base64 32` in terminal
 NEXTAUTH_SECRET=random_secure_string
 
-# URL Configuration
-# Local: http://localhost:3000
-# Production: [https://your-project.vercel.app](https://your-project.vercel.app)
+
+# URL Configuration (Local Development)
 NEXTAUTH_URL=http://localhost:3000
-````
+```
+
+**Production deployment:** When deploying your own instance to Vercel, configure `NEXTAUTH_URL` in your Vercel project's environment variables using your actual deployment domain (for example, `https://your-app.vercel.app`).
+
+Keep `NEXTAUTH_URL=http://localhost:3000` in your local `.env.local` file when running the application on your computer.
+
 
 -----
 
 ## 🔑 Setup Guide (Crucial Steps)
 
-### 1\. Google Cloud Console
 
-To allow users to log in via Gmail, you must configure a Google Cloud Project.
+### 1. Google Cloud Console (OAuth Setup)
 
-1.  Go to [Google Cloud Console](https://console.cloud.google.com/).
-2.  Create a **New Project**.
-3.  **Enable Gmail API**:
-      * Go to "APIs & Services" \> "Library".
-      * Search for "Gmail API" and enable it.
-4.  **Configure OAuth Consent Screen**:
-      * Select **External**.
-      * Add Scopes: `.../auth/gmail.readonly`, `openid`, `email`, `profile`.
-      * **Test Users**: Add your own email address (required while in "Testing" mode).
-5.  **Create Credentials**:
-      * Go to "Credentials" \> "Create Credentials" \> "OAuth Client ID".
-      * Type: **Web Application**.
-      * **Authorized Javascript Origins**:
-          * `http://localhost:3000`
-          * `https://your-production-app.vercel.app` (Add after deploying).
-      * **Authorized Redirect URIs**:
-          * `http://localhost:3000/api/auth/callback/google`
-          * `https://your-production-app.vercel.app/api/auth/callback/google` (Add after deploying).
+MailSage uses Google OAuth 2.0 for authentication and the Gmail API to retrieve emails.
+
+To configure authentication for your own instance:
+
+1. Visit [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project or select an existing one.
+3. Navigate to **APIs & Services → Library** and enable the **Gmail API**.
+4. Configure the Google OAuth consent screen.
+   - Select **External** if users will authenticate with personal Google accounts.
+   - Keep the application in **Testing** mode if it is intended for a limited group of users.
+   - Add the Google email addresses of your intended users under **Test users**.
+   - Request the `https://www.googleapis.com/auth/gmail.readonly` scope.
+5. Navigate to **Clients** (or **Credentials**, depending on the Google Cloud interface).
+6. Create an **OAuth 2.0 Client ID** and select **Web application**.
+
+#### Authorised JavaScript origins
+
+For local development:
+
+```text
+http://localhost:3000
+```
+
+For a deployed instance (if a JavaScript origin is required):
+
+```text
+https://your-app.vercel.app
+```
+
+#### Authorised redirect URIs
+
+For local development:
+
+```text
+http://localhost:3000/api/auth/callback/google
+```
+
+For a deployed instance:
+
+```text
+https://your-app.vercel.app/api/auth/callback/google
+```
+
+**Important:** Replace `your-app.vercel.app` with the domain assigned to your own deployment. If you use a custom domain, use that instead.
+
+The redirect URI must match the callback URL configured for your application.
+
+For MailSage's server-side NextAuth authentication flow, the authorised redirect URI is required. Authorised JavaScript origins may be unnecessary unless you also use browser-side Google OAuth functionality.
+
+
+#### Testing access
+
+If your Google OAuth application remains in Testing mode, only Google accounts added to the application's test-user list can authorise access.
+
+Approved testers may see Google's **"Google hasn't verified this app"** warning during authentication. This is expected for an unverified application in Testing mode.
+
+MailSage requests read-only Gmail access and does not require permission to send, delete or modify emails.
+
 
 ### 2\. Local Installation
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/yourusername/mailsage.git](https://github.com/yourusername/mailsage.git)
+git clone https://github.com/boyluan/mailsage.git
 
-# 2. Install dependencies
+# 2. Enter the project directory
+cd mailsage
+
+# 3. Install dependencies
 npm install
 
-# 3. Run the development server
+# 4. Run the development server
 npm run dev
 ```
 
-Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 -----
 
@@ -96,7 +151,7 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 | :--- | :--- |
 | `Cmd + K` / `Ctrl + K` | Open/Close AI Chat Assistant |
 | `/` (Forward Slash) | Focus Search Bar |
-| `Esc` | Close Chat / Close Email / Clear Search |
+| `Esc` | Close open views or overlays; unfocus the search field without clearing the entered text |
 | `↑` / `↓` | Navigate Email List |
 | `Enter` | Open Selected Email |
 
@@ -117,51 +172,19 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 3.  Update **Authorized Redirect URIs** to include your new production URL.
 4.  Update the `NEXTAUTH_URL` variable in Vercel settings if needed.
 
+## Current Limitations
+
+MailSage is a limited-access application developed as an internal tool and currently used by its creator and a small group of invited users.
+
+- **Inbox retrieval:** The application retrieves up to 50 messages from Gmail's Inbox per request. Pagination is not currently implemented.
+- **Search and date filters:** Results are limited to messages already retrieved by the application.
+- **AI summaries:** Summaries are generated from individual email messages, not independently reconstructed conversation threads. The extracted text is limited to 6,000 characters per summary request.
+- **AI assistant:** The assistant uses sender, subject and date metadata from currently loaded messages. It does not analyse full email bodies.
+- **Pinning:** Pinned-message state is maintained during the current application session and is not permanently stored.
+- **Delete and Archive controls:** These temporarily hide messages from the application view. They do not modify messages in Gmail.
+- **Appearance:** The appearance toggle changes selected interface controls rather than providing a complete light theme.
+
 ## 🛡️ Security Note
 
   * **Never commit your `.env` file.** It is included in `.gitignore` by default to protect your API keys.
   * If you accidentally push a key, revoke it immediately in the Google/OpenAI dashboard.
-
-<!-- end list -->
-
-```
-```
-
-# Next.js (Default Setup)
-
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
