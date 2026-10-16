@@ -6,6 +6,8 @@ import React, {
   useEffect
 } from 'react';
 
+import DOMPurify from 'dompurify';
+
 import {
   useSession,
   signIn,
@@ -282,6 +284,8 @@ const EmailCard = ({
             </button>
             
             <button
+              title="Hide from view (not deleted in Gmail)"
+              aria-label="Hide from view; message is not deleted in Gmail"
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(email.id);
@@ -293,6 +297,8 @@ const EmailCard = ({
               <Trash2 size={18} />
             </button>
             <button
+              title="Hide from view (not archived in Gmail)"
+              aria-label="Hide from view; message is not archived in Gmail"
               onClick={(e) => {
                 e.stopPropagation();
                 onArchive(email.id);
@@ -451,6 +457,14 @@ const FullEmailView = ({
   };
 
   if (!email) return null;
+
+  const safeEmailBody =
+  typeof window === "undefined"
+    ? ""
+    : DOMPurify.sanitize(email.body ?? "", {
+        USE_PROFILES: { html: true },
+      });
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -492,6 +506,8 @@ const FullEmailView = ({
             <Pin size={18} className={email.isPinned ? "fill-current" : ""} />
           </button>
           <button
+            title="Hide from view (not deleted in Gmail)"
+            aria-label="Hide from view; message is not deleted in Gmail"
             onClick={() => {
               onDelete(email.id);
               onClose();
@@ -501,6 +517,8 @@ const FullEmailView = ({
             <Trash2 size={18} />
           </button>
           <button
+            title="Hide from view (not archived in Gmail)"
+            aria-label="Hide from view; message is not archived in Gmail"
             onClick={() => {
               onArchive(email.id);
               onClose();
@@ -565,7 +583,7 @@ const FullEmailView = ({
           </div>
         </div>
         <div className="prose prose-invert max-w-none text-gray-300">
-          <div dangerouslySetInnerHTML={{ __html: email.body }} />
+          <div dangerouslySetInnerHTML={{ __html: safeEmailBody }} />
         </div>
       </div>
     </motion.div>
@@ -594,7 +612,7 @@ const App = () => {
   const [chatMessages, setChatMessages] = useState([
     {
       role: 'ai',
-      content: "I am ready to help you parse your inbox. Ask me anything about your emails."
+      content: "I can help you find emails by sender, subject or date, and pin matching messages. I can't read their full contents."
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -634,7 +652,7 @@ const App = () => {
     setChatMessages([
       {
         role: 'ai',
-        content: "I am ready to help you parse your inbox. Ask me anything about your emails."
+        content: "I can help you find emails by sender, subject or date, and pin matching messages. I can't read their full contents."
       }
     ]);
   };

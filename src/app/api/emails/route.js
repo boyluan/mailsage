@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { getServerSession } from "next-auth";
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 // robust body extractor that handles nested multipart emails
@@ -40,19 +40,18 @@ const getHeader = (headers, name) => {
 };
 
 export async function GET(req) {
-  const session = await getServerSession({
-    callbacks: {
-      session: ({ token }) => ({ accessToken: token?.accessToken }),
-    },
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (!session?.accessToken) {
+  if (!token?.accessToken) {
     return NextResponse.json({ error: "Not Authenticated" }, { status: 401 });
   }
 
   try {
     const auth = new google.auth.OAuth2();
-    auth.setCredentials({ access_token: session.accessToken });
+    auth.setCredentials({ access_token: token.accessToken });
 
     const gmail = google.gmail({ version: "v1", auth });
 
