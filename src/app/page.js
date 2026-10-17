@@ -265,7 +265,7 @@ const EmailCard = ({
                 <Sparkles size={18} className={email.hasSummary ? "fill-current" : ""} />
               )}
             </button>
-            
+
             {/* PIN BUTTON - Highlights Blue if Pinned */}
             <button
               onClick={(e) => {
@@ -282,7 +282,7 @@ const EmailCard = ({
             >
               <Pin size={18} className={email.isPinned ? "fill-current" : ""} />
             </button>
-            
+
             <button
               title="Hide from view (not deleted in Gmail)"
               aria-label="Hide from view; message is not deleted in Gmail"
@@ -590,14 +590,22 @@ const FullEmailView = ({
   );
 };
 
+
 const App = () => {
   const { data: session } = useSession();
+
+  const accountEmail = session?.user?.email?.trim().toLowerCase() || null;
+
   const [emails, setEmails] = useState([]);
   const [activeLabelId, setActiveLabelId] = useState('INBOX');
-  // --- NEW: Persistent Pinned State ---
+
+  // Email preferences that will be stored locally
   const [pinnedIds, setPinnedIds] = useState(new Set());
+  const [hiddenIds, setHiddenIds] = useState(new Set());
+  const [preferencesLoadedFor, setPreferencesLoadedFor] = useState(null);
 
   const [loading, setLoading] = useState(true);
+
   const [summarizingIds, setSummarizingIds] = useState(new Set());
   const [expandedEmailId, setExpandedEmailId] = useState(null);
   const [viewingEmailId, setViewingEmailId] = useState(null);
@@ -621,10 +629,78 @@ const App = () => {
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
 
+  // Load saved email preferences for the signed-in Google account
+  useEffect(() => {
+    if (!accountEmail) {
+      setPinnedIds(new Set());
+      setHiddenIds(new Set());
+      setPreferencesLoadedFor(null);
+      return;
+    }
+
+    const storageKey = `mailsage:email-preferences:v1:${accountEmail}`;
+
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      const preferences = saved ? JSON.parse(saved) : {};
+
+      const savedPinnedIds = Array.isArray(preferences?.pinnedIds)
+        ? preferences.pinnedIds.filter(id => typeof id === "string")
+        : [];
+
+      const savedHiddenIds = Array.isArray(preferences?.hiddenIds)
+        ? preferences.hiddenIds.filter(id => typeof id === "string")
+        : [];
+
+      setPinnedIds(new Set(savedPinnedIds));
+      setHiddenIds(new Set(savedHiddenIds));
+    } catch (error) {
+      console.warn("Could not load MailSage email preferences:", error);
+      setPinnedIds(new Set());
+      setHiddenIds(new Set());
+    }
+
+    setPreferencesLoadedFor(accountEmail);
+  }, [accountEmail]);
+
+
+  // Save email preferences whenever they change
+  useEffect(() => {
+    // Wait until this account's saved preferences have loaded
+    if (!accountEmail || preferencesLoadedFor !== accountEmail) {
+      return;
+    }
+
+    const storageKey = `mailsage:email-preferences:v1:${accountEmail}`;
+
+    const preferences = {
+      pinnedIds: Array.from(pinnedIds),
+      hiddenIds: Array.from(hiddenIds),
+    };
+
+    try {
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify(preferences)
+      );
+    } catch (error) {
+      console.warn("Could not save MailSage email preferences:", error);
+    }
+  }, [accountEmail, preferencesLoadedFor, pinnedIds, hiddenIds]);
+
+  const emailsWithPins = emails.map(email => ({
+    ...email,
+    isPinned: pinnedIds.has(email.id)
+  }));
+
+
   // --- FILTER EMAILS ---
-  const filteredEmails = emails
+  const filteredEmails = emailsWithPins
     .filter(email => {
-      // 1. Pinned Tab Logic: Only show emails that are in the Pinned Set
+      // Hide emails that the user has hidden locally in MailSage
+      if (hiddenIds.has(email.id)) return false;
+
+      // Pinned Tab Logic: Only show emails in the Pinned Set
       if (activeTab === 'Pinned' && !pinnedIds.has(email.id)) return false;
 
       if (searchQuery) {
@@ -692,13 +768,7 @@ const App = () => {
           try {
             const data = JSON.parse(text);
             if (data.emails) {
-              // MERGE API DATA WITH LOCAL PINS
-              // If an email from API is in our pinnedIds set, mark it as isPinned=true
-              const mergedEmails = data.emails.map(e => ({
-                ...e,
-                isPinned: pinnedIds.has(e.id)
-              }));
-              setEmails(mergedEmails);
+              setEmails(data.emails);
             }
           } catch (e) {
             console.warn("API returned non-JSON response:", text);
@@ -801,22 +871,27 @@ const App = () => {
       </div>
     );
 
-  const handleArchive = (id) => setEmails(prev => prev.filter(e => e.id !== id));
-  const handleDelete = (id) => setEmails(prev => prev.filter(e => e.id !== id));
+  // Hide emails locally in MailSage without modifying Gmail
+  const handleArchive = (id) => {
+    setHiddenIds(prev => new Set(prev).add(id));
+  };
 
-  // --- UPDATED PIN HANDLER: Updates both Email List AND Master Pin Set ---
+  const handleDelete = (id) => {
+    setHiddenIds(prev => new Set(prev).add(id));
+  };
+
+
+  // Pin or unpin an email locally in MailSage
   const handlePin = (id) => {
-    // 1. Update the Email Object (Visual UI)
-    setEmails(prev => prev.map(e => e.id === id ? { ...e, isPinned: !e.isPinned } : e));
-    
-    // 2. Update the Master Pin Set (Persistence)
     setPinnedIds(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(id)) {
         newSet.delete(id);
       } else {
         newSet.add(id);
       }
+
       return newSet;
     });
   };
@@ -908,7 +983,7 @@ const App = () => {
       <AnimatePresence>
         {viewingEmailId && (
           <FullEmailView
-            email={emails.find(e => e.id === viewingEmailId)}
+            email={emailsWithPins.find(e => e.id === viewingEmailId)}
             onClose={() => {
               setViewingEmailId(null);
               setExpandedEmailId(null);
