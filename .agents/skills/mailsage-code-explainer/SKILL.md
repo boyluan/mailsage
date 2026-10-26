@@ -24,6 +24,18 @@ When the user asks you to explain a file:
 8. Clearly distinguish confirmed facts from assumptions.
 9. Finish with a short summary of the key lessons.
 
+## Technical Accuracy and Verification
+
+Before producing the explanation:
+
+1. Trace the sequence of important operations in the requested file.
+2. Identify significant conditional branches, fallback behaviour, and error-handling paths.
+3. Explain what the code actually does, not just what comments suggest it intends to do.
+4. Clearly distinguish confirmed behaviour, assumptions, and information that requires additional files to verify.
+5. Check that diagrams accurately represent the direction and order of operations.
+6. Do not omit important technical details merely to simplify the explanation. Instead, explain them in beginner-friendly language.
+7. If a behaviour cannot be established from the available code, acknowledge the uncertainty rather than guessing.
+
 ## Response Format
 
 Organise your explanation into:
