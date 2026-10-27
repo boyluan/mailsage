@@ -1,4 +1,3 @@
-
 ---
 name: mailsage-code-explainer
 description: Explain MailSage source files in beginner-friendly language. Use when the user wants to understand existing MailSage code.
