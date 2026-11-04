@@ -1,0 +1,9 @@
+Defect ID,Stage,Expected finding,W · High no skill,X · High V3,Y · Medium V3,Z · Medium no skill
+B1,Pagination,Empty intermediate page prematurely ends pagination.,Found,Found,Found,Found
+B2,Deduplication,Message IDs incorrectly treated as case-insensitive.,Found,Found,Found,Found
+B3,Filtering,Messages carrying TRASH are not excluded.,Found,Found,Found,Found
+B4,Cutoff,Messages exactly at cutoff are wrongly excluded.,Found,Found,Found,Found
+B5,Errors,Invalid retrieved details incorrectly receive FETCH_FAILED.,Found,Found,Found,Found
+B6,Concurrency,Detail requests can exceed maxConcurrent.,Found,Found,Found,Found
+B7,Sorting,Oldest-first rather than newest-first results.,Found,Found,Found,Found
+B8,Failure reporting,limit = 0 suppresses failure records.,Found,Found,Found,Found

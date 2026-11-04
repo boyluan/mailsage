@@ -1,0 +1,8 @@
+Pair,Without skill,With Skill V3,Model / effort,Task family,Outcome compared,Baseline found / points,Baseline maximum,Skill found / points,Skill maximum,Baseline %,Skill %,Δ (percentage points),Interpretation / limitations
+N / M,N,M,GPT-6 · High,Full-file explanation,Explanation V2 rubric,48.0,50.0,48.0,50.0,0.96,0.96,0,Both 48/50. Different minor technical/visual deductions; single runs.
+O / P,O,P,GPT-6 · Medium,Full-file explanation,Explanation V2 rubric,48.0,50.0,48.0,50.0,0.96,0.96,0,Both 48/50. Skill-assisted visual deduction; other subtleties differ.
+Q / R,Q,R,GPT-6 · Medium,Explicit technical questions,6 × 2 question rubric,12.0,12.0,12.0,12.0,1,1,0,Both 12/12; explicit prompting contributed to ceiling effect.
+S / T,S,T,GPT-6 · Medium,Proactive issue discovery,6 × 2 issue rubric,12.0,12.0,12.0,12.0,1,1,0,Both 12/12; BOTH made one material timestamp-consequence overstatement.
+U / V,U,V,GPT-6 · Medium,Benchmark V1 blind,Seeded defect recall,7.0,7.0,7.0,7.0,1,1,0,Both 7/7; 0 false positives and 0 false negatives; V1 includes intended-behaviour comments.
+W / X,W,X,GPT-6 · High,Benchmark V2 blind,Seeded defect recall,8.0,8.0,8.0,8.0,1,1,0,Both 8/8; W additionally flagged one valid issue shared by both implementations.
+Z / Y,Z,Y,GPT-6 · Medium,Benchmark V2 blind,Seeded defect recall,8.0,8.0,8.0,8.0,1,1,0,Both 8/8; Z reported local tests and excluded a mistaken ninth candidate.
