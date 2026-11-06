@@ -21,6 +21,20 @@ MailSage is a private, invite-only Gmail companion built with Next.js. It uses O
 * **Persistent Hide Actions**: Use the Archive or Delete icons to hide emails from the MailSage interface. Hidden message IDs are stored locally and remain hidden across refreshes and sign-in sessions. These actions do not modify, archive or delete emails in Gmail.
 * **Inbox Retrieval**: Loads up to 50 messages from the user's Gmail Inbox. Search and date-range filters operate on this retrieved set rather than the user's entire mailbox.
 
+## 🧪 AI Agent Skill Experiment — Tests A–Z
+
+MailSage also served as the initial source-code test environment for the **MailSage Code Explainer**, a reusable AI agent skill designed to help explain JavaScript code, describe application workflows and identify implementation defects. Later evaluations used synthetic JavaScript examples rather than personal Gmail data.
+
+The experiment covers **26 recorded evaluations (Tests A–Z)**, progressing from exploratory comparisons to controlled, synthetic defect-discovery benchmarks. Frozen Benchmark V2 contains eight deliberately seeded defects; its reference implementation was checked with **55 automated JavaScript tests**. In four final blind evaluations, configurations with and without Skill V3 identified all eight seeded defects. These small, high-performing samples did **not** establish an improvement in seeded-defect recall attributable to the skill.
+
+This is a **separate AI engineering and evaluation experiment**, not a feature of the live MailSage email application.
+
+- **[Experiment overview and methodology](evals/mailsage-code-explainer/README.md)** — objectives, setup, findings and limitations.
+- **[Full evaluation report (Tests A–Z)](evals/mailsage-code-explainer/EVALUATION-REPORT.md)** — test history, methodology, scoring, evidence and conclusions.
+- **[Evaluation tracker (Excel, .xlsx)](evals/mailsage-code-explainer/results/MailSage%20Evaluation%20Tracker%20%28Tests%20A-Z%29.xlsx)** — the downloadable workbook containing the recorded tests and supporting analysis.
+- **[Seven CSV datasets](evals/mailsage-code-explainer/results/csv/)** — GitHub-readable tabular exports of the tracker data.
+- **[Agent skill instructions](.agents/skills/mailsage-code-explainer/SKILL.md)** — the reusable instructions used in the skill-assisted evaluations.
+
 ## 🛠️ Tech Stack
 
 * **Framework**: [Next.js 16.4.1](https://nextjs.org) (App Router)

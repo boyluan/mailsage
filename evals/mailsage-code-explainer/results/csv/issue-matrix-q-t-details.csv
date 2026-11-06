@@ -1,0 +1,5 @@
+TEST,SKILL,KNOWN ISSUES DISCOVERED,DISCOVERY SCORE,FALSE CLAIMS NOTED,MAIN FALSE CLAIM,CRITICAL FAILURES,COMMENT
+Q,No,6/6,12/12,,Not separately tracked,0.0,Explicit six-question prompt; technical reasoning.
+R,V3,6/6,12/12,,Not separately tracked,0.0,Same six-question prompt with skill attached.
+S,No,6/6,12/12,1.0,Invalid date allegedly throws/discards email,0.0,Independent discovery.
+T,V3,6/6,12/12,1.0,Same invalid-date consequence,0.0,Independent discovery.
